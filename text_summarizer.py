@@ -13,6 +13,7 @@ import numpy as np
 from nltk.cluster.util import cosine_distance
 import networkx
 import streamlit as st
+import nltkmodules
 
 st.header("Text Summarizer")
 
