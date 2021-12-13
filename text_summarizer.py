@@ -13,16 +13,13 @@ import numpy as np
 from nltk.cluster.util import cosine_distance
 import networkx
 import streamlit as st
-cd Text-Summarizer/
-mkdir nltk_data
-python -m nltk.downloader
 
-nltk.download("stopwords", "Text-Summarizer/nltk_data/")
 st.header("Text Summarizer")
 
 uploaded_file = st.file_uploader("Choose File here")
 
-stopwords = stopwords.words('english')
+sw = open("stopwords.txt", 'r')
+stopwords =  sw.read().split('\n')
 
 def read_data(file_name):
   string = file_name.read().decode('utf-8')
@@ -65,7 +62,7 @@ def create_similarity_matrix(sentences, stopwords):
       similarity_matrix[i][j] = sentence_similarity(sentences[i], sentences[j], stopwords)
   return similarity_matrix
 
-def generate_summary(file, top=5):
+def generate_summary(file):
   summarize_text = []
 
   # Step 1 : Read File and convert to list of sentences
@@ -80,16 +77,17 @@ def generate_summary(file, top=5):
   
   # Step 4 : Sort the rank and pick top sentences
   rank = sorted(((scores[i], s) for i, s in enumerate (sentences)), reverse=True)
-
+  
+  top = len(sentences)// 3
   for idx in range(top):
     summarize_text.append(rank[idx][1])
 
-  summarize_text = " ".join(summarize_text)
+  summarize_text = ". ".join(summarize_text)
   return summarize_text
 
 try:
     if uploaded_file is not None:
-         st.success(generate_summary(uploaded_file, 5))
+         st.success(generate_summary(uploaded_file))
 except FileNotFoundError:
     st.error('File not found.')    
 
