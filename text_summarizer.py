@@ -13,13 +13,15 @@ import numpy as np
 from nltk.cluster.util import cosine_distance
 import networkx
 import streamlit as st
-import nltkmodules
+cd Text-Summarizer/
+mkdir nltk_data
+python -m nltk.downloader
 
+nltk.download("stopwords", "Text-Summarizer/nltk_data/")
 st.header("Text Summarizer")
 
 uploaded_file = st.file_uploader("Choose File here")
 
-nltk.download('stopwords')
 stopwords = stopwords.words('english')
 
 def read_data(file_name):
