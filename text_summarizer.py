@@ -18,7 +18,10 @@ def read_data(file_name):
   sentences = []
 
   for sentence in article:
-    sentences.append(sentence.replace("[^a-zA-Z]", ' '))
+    if len(sentence) == 0:
+      pass
+    else:
+      sentences.append(sentence.replace("[^a-zA-Z]", ' '))
   return sentences
 
 def sentence_similarity(sent1, sent2, stopwords = None):
