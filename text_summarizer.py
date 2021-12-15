@@ -7,10 +7,24 @@ import streamlit as st
 
 st.header("Text Summarizer")
 
+with st.form(key='my_form'):
+    text_input = st.text_input(label='Add Paragraph here')
+    submit_button = st.form_submit_button(label='Submit')
+
 uploaded_file = st.file_uploader("Choose File here")
 
-sw = open("stopwords.txt", 'r')
+sw = open(r"C:\Users\welcome\Data Science\Deep Learning\NLP\Text Summarizer\stopwords.txt", 'r')
 stopwords =  sw.read().split('\n')
+
+def read_para(para):
+    article = para.split('.')
+    sentences = []
+    for sentence in article:
+        if len(sentence) == 0:
+            pass
+        else:
+            sentences.append(sentence.replace("[^a-zA-Z]", ' '))
+    return sentences
 
 def read_data(file_name):
   string = file_name.read().decode('utf-8')
@@ -19,9 +33,9 @@ def read_data(file_name):
 
   for sentence in article:
     if len(sentence) == 0:
-      pass
+        pass
     else:
-      sentences.append(sentence.replace("[^a-zA-Z]", ' '))
+        sentences.append(sentence.replace("[^a-zA-Z]", ' '))
   return sentences
 
 def sentence_similarity(sent1, sent2, stopwords = None):
@@ -79,9 +93,34 @@ def generate_summary(file):
   summarize_text = ". ".join(summarize_text)
   return summarize_text
 
+def generate_summary2(para):
+  summarize_text = []
+
+  # Step 1 : Read File and convert to list of sentences
+  sentences = read_para(para)
+
+  # Step 2 : Generate Similarity Matrix
+  similar_matrix = create_similarity_matrix(sentences, stopwords)
+
+  # Step 3 : Rank the sentences in similarity matrix
+  sm_graph = networkx.from_numpy_array(similar_matrix)
+  scores = networkx.pagerank(sm_graph)
+  
+  # Step 4 : Sort the rank and pick top sentences
+  rank = sorted(((scores[i], s) for i, s in enumerate (sentences)), reverse=True)
+  
+  top = len(sentences)// 3
+  for idx in range(top):
+    summarize_text.append(rank[idx][1])
+
+  summarize_text = ". ".join(summarize_text)
+  return summarize_text
+
 try:
     if uploaded_file is not None:
          st.success(generate_summary(uploaded_file))
 except FileNotFoundError:
     st.error('File not found.')    
 
+if submit_button:
+    st.success(generate_summary2(text_input))
