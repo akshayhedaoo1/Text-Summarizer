@@ -13,7 +13,7 @@ with st.form(key='my_form'):
 
 uploaded_file = st.file_uploader("Choose File here")
 
-sw = open(r"C:\Users\welcome\Data Science\Deep Learning\NLP\Text Summarizer\stopwords.txt", 'r')
+sw = open("stopwords.txt", 'r')
 stopwords =  sw.read().split('\n')
 
 def read_para(para):
